@@ -2,7 +2,7 @@
 
 Git-style version control for LLM prompts.
 
-Track changes, diff versions, and roll back prompts across your AI projects, from the terminal.
+Version, diff, and roll back prompts locally from your terminal.
 
 ```bash
 npm install -g promptrace
@@ -98,4 +98,4 @@ Any string works, slashes are just a convention for readability.
 
 ## License
 
-MIT
+[MIT](https://opensource.org/license/mit)
