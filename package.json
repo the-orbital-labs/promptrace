@@ -1,6 +1,6 @@
 {
   "name": "promptrace",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Git-style version control for LLM prompts",
   "main": "index.js",
   "bin": {
@@ -11,10 +11,18 @@
     "dev": "tsx src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["prompt", "llm", "version-control", "ai", "cli", "diff"],
+  "author": "Orbital Labs",
+  "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/the-orbital-labs/promptrace"
+  },
+  "homepage": "https://github.com/the-orbital-labs/promptrace#readme",
+  "bugs": {
+    "url": "https://github.com/the-orbital-labs/promptrace/issues"
+  },
   "dependencies": {
     "better-sqlite3": "^12.11.1",
     "chalk": "^4.1.2",
