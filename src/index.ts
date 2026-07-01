@@ -9,13 +9,13 @@ import { rollbackCommand } from './commands/rollback.js'
 const program = new Command()
 
 program
-  .name('trace')
+  .name('promptrace')
   .description('Git-style version control for LLM prompts')
   .version('0.1.0')
 
 program
   .command('init')
-  .description('Initialize a Trace repo')
+  .description('Initialize a promptrace repo')
   .action(initCommand)
 
 program

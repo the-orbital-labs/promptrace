@@ -1,10 +1,10 @@
 {
-  "name": "trace",
+  "name": "promptrace",
   "version": "0.1.0",
   "description": "Git-style version control for LLM prompts",
   "main": "index.js",
   "bin": {
-    "trace": "./dist/index.cjs"
+    "promptrace": "./dist/index.cjs"
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs",

@@ -2,7 +2,7 @@ import Database from 'better-sqlite3'
 import path from 'path'
 import fs from 'fs'
 
-const DIR = path.join(process.cwd(), '.trace')
+const DIR = path.join(process.cwd(), '.promptrace')
 const DB_PATH = path.join(DIR, 'store.db')
 
 export function initDb() {
@@ -26,12 +26,12 @@ export function initDb() {
   `)
 
   db.close()
-  console.log('Initialized empty Trace repo in .trace/')
+  console.log('Initialized empty promptrace repo in .promptrace/')
 }
 
 export function getDb(): InstanceType<typeof Database> {
   if (!fs.existsSync(DIR)) {
-    console.error('Not a Trace repo. Run: trace init')
+    console.error('Not a promptrace repo. Run: promptrace init')
     process.exit(1)
   }
   return new Database(DB_PATH)

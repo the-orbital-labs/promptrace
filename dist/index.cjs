@@ -30,7 +30,7 @@ var import_commander = require("commander");
 var import_better_sqlite3 = __toESM(require("better-sqlite3"), 1);
 var import_path = __toESM(require("path"), 1);
 var import_fs = __toESM(require("fs"), 1);
-var DIR = import_path.default.join(process.cwd(), ".trace");
+var DIR = import_path.default.join(process.cwd(), ".promptrace");
 var DB_PATH = import_path.default.join(DIR, "store.db");
 function initDb() {
   if (import_fs.default.existsSync(DIR)) {
@@ -50,11 +50,11 @@ function initDb() {
     )
   `);
   db.close();
-  console.log("Initialized empty Trace repo in .trace/");
+  console.log("Initialized empty promptrace repo in .promptrace/");
 }
 function getDb() {
   if (!import_fs.default.existsSync(DIR)) {
-    console.error("Not a Trace repo. Run: trace init");
+    console.error("Not a promptrace repo. Run: promptrace init");
     process.exit(1);
   }
   return new import_better_sqlite3.default(DB_PATH);
@@ -159,8 +159,8 @@ function rollbackCommand(name, options) {
 
 // src/index.ts
 var program = new import_commander.Command();
-program.name("trace").description("Git-style version control for LLM prompts").version("0.1.0");
-program.command("init").description("Initialize a Trace repo").action(initCommand);
+program.name("promptrace").description("Git-style version control for LLM prompts").version("0.1.0");
+program.command("init").description("Initialize a promptrace repo").action(initCommand);
 program.command("add <name> <content>").description("Add or update a prompt").action(addCommand);
 program.command("log <name>").description("Show version history of a prompt").action(logCommand);
 program.command("diff <name> <v1> <v2>").description("Show word-level diff between two versions").action(diffCommand);
