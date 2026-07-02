@@ -101,4 +101,4 @@ Any string works, slashes are just a convention for readability.
 
 ## License
 
-[MIT](https://github.com/the-orbital-labs/promptrace/blob/main/LICENSE)
+Promptrace is released under [MIT License](https://github.com/the-orbital-labs/promptrace/blob/main/LICENSE)
