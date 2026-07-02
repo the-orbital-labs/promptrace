@@ -5,7 +5,7 @@ Git-style version control for LLM prompts.
 Version, diff, and roll back prompts locally from your terminal.
 
 [![npm](https://img.shields.io/npm/v/promptrace.svg)](https://www.npmjs.com/package/promptrace)
-[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/license/mit)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/the-orbital-labs/promptrace/blob/main/LICENSE)
 
 ```bash
 npm install -g promptrace
@@ -101,4 +101,4 @@ Any string works, slashes are just a convention for readability.
 
 ## License
 
-[MIT](https://opensource.org/license/mit)
+[MIT](https://github.com/the-orbital-labs/promptrace/blob/main/LICENSE)
