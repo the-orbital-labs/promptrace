@@ -18,6 +18,7 @@ export function logCommand(name: string) {
 
   for (const row of rows) {
     console.log(chalk.cyan(`v${row.version}`) + chalk.gray(` - ${row.created_at}`))
+    if (row.message) console.log(chalk.gray(`  ${row.message}`))
     console.log(`  ${row.content}`)
     console.log()
   }

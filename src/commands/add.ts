@@ -1,7 +1,7 @@
 import { getDb } from '../db.js'
 import chalk from 'chalk'
 
-export function addCommand(name: string, content: string) {
+export function addCommand(name: string, content: string, options: { message?: string }) {
   const db = getDb()
 
   const latest = db.prepare(
@@ -11,9 +11,9 @@ export function addCommand(name: string, content: string) {
   const nextVersion = (latest?.v ?? 0) + 1
 
   db.prepare(`
-    INSERT INTO prompts (name, content, version)
-    VALUES (?, ?, ?)
-  `).run(name, content, nextVersion)
+    INSERT INTO prompts (name, content, version, message)
+    VALUES (?, ?, ?, ?)
+  `).run(name, content, nextVersion, options.message ?? null)
 
   console.log(chalk.green(`Added '${name}' -> v${nextVersion}`))
   db.close()

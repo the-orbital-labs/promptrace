@@ -2,6 +2,7 @@
 import { Command } from 'commander'
 import { initCommand } from './commands/init.js'
 import { addCommand } from './commands/add.js'
+import { listCommand } from './commands/list.js'
 import { logCommand } from './commands/log.js'
 import { diffCommand } from './commands/diff.js'
 import { rollbackCommand } from './commands/rollback.js'
@@ -21,7 +22,13 @@ program
 program
   .command('add <name> <content>')
   .description('Add or update a prompt')
+  .option('-m, --message <message>', 'Commit message describing the change')
   .action(addCommand)
+
+program
+  .command('list')
+  .description('List all tracked prompts')
+  .action(listCommand)
 
 program
   .command('log <name>')

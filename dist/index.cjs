@@ -67,37 +67,61 @@ function initCommand() {
 
 // src/commands/add.ts
 var import_chalk = __toESM(require("chalk"), 1);
-function addCommand(name, content) {
+function addCommand(name, content, options) {
   const db = getDb();
   const latest = db.prepare(
     "SELECT MAX(version) as v FROM prompts WHERE name = ?"
   ).get(name);
   const nextVersion = (latest?.v ?? 0) + 1;
   db.prepare(`
-    INSERT INTO prompts (name, content, version)
-    VALUES (?, ?, ?)
-  `).run(name, content, nextVersion);
+    INSERT INTO prompts (name, content, version, message)
+    VALUES (?, ?, ?, ?)
+  `).run(name, content, nextVersion, options.message ?? null);
   console.log(import_chalk.default.green(`Added '${name}' -> v${nextVersion}`));
   db.close();
 }
 
-// src/commands/log.ts
+// src/commands/list.ts
 var import_chalk2 = __toESM(require("chalk"), 1);
+function listCommand() {
+  const db = getDb();
+  const rows = db.prepare(`
+    SELECT name, MAX(version) as version, MAX(created_at) as created_at
+    FROM prompts
+    GROUP BY name
+    ORDER BY name ASC
+  `).all();
+  if (rows.length === 0) {
+    console.log(import_chalk2.default.yellow("No prompts tracked yet."));
+    db.close();
+    return;
+  }
+  console.log(import_chalk2.default.bold("\nTracked prompts:\n"));
+  for (const row of rows) {
+    console.log(`${row.name} ${import_chalk2.default.cyan(`v${row.version}`)} ${import_chalk2.default.gray(`- ${row.created_at}`)}`);
+  }
+  console.log();
+  db.close();
+}
+
+// src/commands/log.ts
+var import_chalk3 = __toESM(require("chalk"), 1);
 function logCommand(name) {
   const db = getDb();
   const rows = db.prepare(`
     SELECT * FROM prompts WHERE name = ? ORDER BY version DESC
   `).all(name);
   if (rows.length === 0) {
-    console.log(import_chalk2.default.yellow(`No prompt found: '${name}'`));
+    console.log(import_chalk3.default.yellow(`No prompt found: '${name}'`));
     db.close();
     return;
   }
-  console.log(import_chalk2.default.bold(`
+  console.log(import_chalk3.default.bold(`
 History for '${name}':
 `));
   for (const row of rows) {
-    console.log(import_chalk2.default.cyan(`v${row.version}`) + import_chalk2.default.gray(` - ${row.created_at}`));
+    console.log(import_chalk3.default.cyan(`v${row.version}`) + import_chalk3.default.gray(` - ${row.created_at}`));
+    if (row.message) console.log(import_chalk3.default.gray(`  ${row.message}`));
     console.log(`  ${row.content}`);
     console.log();
   }
@@ -105,7 +129,7 @@ History for '${name}':
 }
 
 // src/commands/diff.ts
-var import_chalk3 = __toESM(require("chalk"), 1);
+var import_chalk4 = __toESM(require("chalk"), 1);
 var import_diff = require("diff");
 function diffCommand(name, v1, v2) {
   const db = getDb();
@@ -116,32 +140,32 @@ function diffCommand(name, v1, v2) {
     "SELECT * FROM prompts WHERE name = ? AND version = ?"
   ).get(name, parseInt(v2));
   if (!rowA || !rowB) {
-    console.log(import_chalk3.default.red(`Could not find both versions for '${name}'`));
+    console.log(import_chalk4.default.red(`Could not find both versions for '${name}'`));
     db.close();
     return;
   }
-  console.log(import_chalk3.default.bold(`
+  console.log(import_chalk4.default.bold(`
 Diff '${name}': v${v1} -> v${v2}
 `));
   const changes = (0, import_diff.diffWords)(rowA.content, rowB.content);
   changes.forEach((part) => {
-    if (part.added) process.stdout.write(import_chalk3.default.green(part.value));
-    else if (part.removed) process.stdout.write(import_chalk3.default.red(part.value));
-    else process.stdout.write(import_chalk3.default.gray(part.value));
+    if (part.added) process.stdout.write(import_chalk4.default.green(part.value));
+    else if (part.removed) process.stdout.write(import_chalk4.default.red(part.value));
+    else process.stdout.write(import_chalk4.default.gray(part.value));
   });
   console.log("\n");
   db.close();
 }
 
 // src/commands/rollback.ts
-var import_chalk4 = __toESM(require("chalk"), 1);
+var import_chalk5 = __toESM(require("chalk"), 1);
 function rollbackCommand(name, options) {
   const db = getDb();
   const target = db.prepare(
     "SELECT * FROM prompts WHERE name = ? AND version = ?"
   ).get(name, parseInt(options.to));
   if (!target) {
-    console.log(import_chalk4.default.red(`Version v${options.to} not found for '${name}'`));
+    console.log(import_chalk5.default.red(`Version v${options.to} not found for '${name}'`));
     db.close();
     return;
   }
@@ -153,7 +177,7 @@ function rollbackCommand(name, options) {
     INSERT INTO prompts (name, content, version, message)
     VALUES (?, ?, ?, ?)
   `).run(name, target.content, nextVersion, `rollback to v${options.to}`);
-  console.log(import_chalk4.default.green(`Rolled back '${name}' to v${options.to} -> saved as v${nextVersion}`));
+  console.log(import_chalk5.default.green(`Rolled back '${name}' to v${options.to} -> saved as v${nextVersion}`));
   db.close();
 }
 
@@ -161,7 +185,8 @@ function rollbackCommand(name, options) {
 var program = new import_commander.Command();
 program.name("promptrace").description("Git-style version control for LLM prompts").version("0.1.0");
 program.command("init").description("Initialize a promptrace repo").action(initCommand);
-program.command("add <name> <content>").description("Add or update a prompt").action(addCommand);
+program.command("add <name> <content>").description("Add or update a prompt").option("-m, --message <message>", "Commit message describing the change").action(addCommand);
+program.command("list").description("List all tracked prompts").action(listCommand);
 program.command("log <name>").description("Show version history of a prompt").action(logCommand);
 program.command("diff <name> <v1> <v2>").description("Show word-level diff between two versions").action(diffCommand);
 program.command("rollback <name>").description("Roll back a prompt to a previous version").option("--to <version>", "Version to roll back to").action(rollbackCommand);
